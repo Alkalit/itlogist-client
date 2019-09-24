@@ -8,6 +8,10 @@ class ITLogistException(Exception):
 
 class ITLogistClient:
 
+    EXPRESS_DELIVERY = 1
+    DELIVERY = 2
+    BY_SELF = 7
+
     def __init__(self, api_key: str, domain: str):
 
         self.api_key = api_key

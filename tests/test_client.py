@@ -26,7 +26,7 @@ order = {
     'md_order': 'e4516e384ef9cd91df081d5fe68cbcf9',
     'order_barcode': '1000001427508',
     'ordernumber': '1338',
-    'ordertype': 1,
+    'ordertype': Client.EXPRESS_DELIVERY,
     'pieces': 2,
     'roomfrom': '301',
     'roomto': '17',
@@ -59,7 +59,7 @@ invalid_order = {
     'md_order': 'e4516e384ef9cd91df081d5fe68cbcf9',
     'order_barcode': '1000001427508',
     'ordernumber': '1339',
-    'ordertype': 1,
+    'ordertype': Client.EXPRESS_DELIVERY,
     'pieces': 2,
     'roomfrom': '301',
     'roomto': '17',
@@ -98,7 +98,7 @@ class TestClient(TestCase):
         orders = {
             "orders": {
                 "666": {
-                    "ordertype": 2,
+                    "ordertype": Client.DELIVERY,
                     "ordernumber": 666,
                     "date_from": "2019-09-01",
                     "time1_from": "12:00",
@@ -219,7 +219,7 @@ class TestClient(TestCase):
 
         client.add_order(
             order_id="100500",
-            ordertype=2,
+            ordertype=Client.DELIVERY,
 
             date_from="2019-09-25",
             time1_from="12:00",
@@ -246,7 +246,7 @@ class TestClient(TestCase):
         expected = {
             "orders": {
                 "100500": dict(
-                    ordertype=2,
+                    ordertype=Client.DELIVERY,
 
                     date_from="2019-09-25",
                     time1_from="12:00",
