@@ -1,1 +1,1 @@
-Простой api-клиент для itlogits.
+Простой api-клиент для itlogist.
