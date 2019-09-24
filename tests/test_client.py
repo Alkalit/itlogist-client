@@ -3,7 +3,7 @@ import responses
 from itlogist.client import ITLogistClient as Client, ITLogistException
 
 
-API_KEY = 'ae56f2b0b3728d564cacd97ffdff8a61'
+API_KEY = '6de38f49c4473d8ea2d9e9158404e97c'
 DOMAIN = "mydomain"
 
 order = {
@@ -143,47 +143,24 @@ class TestClient(TestCase):
             client.send(orders)
 
     @responses.activate
-    def test_add_orders(self):
+    def test_send_if_an_error(self):
 
         fake_response = {
             'result': 0,
             'error': 'Array orders is null',
             'get': [],
-            'post': {'orders': '666deadbeaf'}
-         }
+            'post': {'orders': '{}'}
+        }
 
         url = 'https://{}.itlogist.ru/api/v1/{}/orders_add/'.format(DOMAIN, API_KEY)
         responses.add(responses.POST, url, json=fake_response, status=200)
 
-        wrong_orders = {
-            "orders": {
-                "666deadbeaf": {
-                    "ordertype": 5,
-                    "ordernumber": "666deadbeaf",
-                    "date_from": "2019-13-01",
-                    "time1_from": "12:00",
-                    "time2_from": "13:00",
-
-                    "date_to": "2019-14-01",
-                    "time1_to": "17:00",
-                    "time2_to": "18:00",
-                    "pieces": 1,
-
-                    "clientnamefrom": "Вася",
-                    "clientcontactfrom": "Вася",
-                    "clientphonefrom": 78124071343,
-
-                    "clientnameto": "Маша",
-                    "clientcontactto": "Маша",
-                    "clientphoneto": 78124071342,
-                }
-            }
-        }
+        wrong_orders = { "orders": { } }
 
         client = Client(API_KEY, DOMAIN)
 
         with self.assertRaises(ITLogistException, msg='Array orders is null'):
-            client.add_orders(wrong_orders)
+            client.send(wrong_orders)
 
     @responses.activate
     def test_send(self):
@@ -205,4 +182,31 @@ class TestClient(TestCase):
 
         response = client.send(orders)
 
+        self.assertEqual(response, fake_response)
+
+    @responses.activate
+    def test_send_if_some_error(self):
+
+        fake_response = {
+                 'result': 0,
+                 'info': {
+                     '1338': {'order_add': 1, 'itlogist_order_id': 74724},
+                     '1339': {'error': 'error date 2015-09-25 (2015-09-25), error date 2015-09-25 (2015-09-25)', 'order_add': 0}
+                  }
+             }
+
+        url = 'https://{}.itlogist.ru/api/v1/{}/orders_add/'.format(DOMAIN, API_KEY)
+        responses.add(responses.POST, url, json=fake_response, status=200)
+
+        wrong_orders = {"orders": {
+                '1338': order,
+                '1339': invalid_order
+            }
+        }
+
+        client = Client(API_KEY, DOMAIN)
+
+        response = client.send(wrong_orders)
+
+        # Don't rise anithing if some orders passed and some not
         self.assertEqual(response, fake_response)

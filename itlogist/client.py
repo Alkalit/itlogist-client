@@ -41,9 +41,7 @@ class ITLogistClient:
         except JSONDecodeError:
             raise ITLogistException(response.text)
 
-
-        # TODO - как отработает запрос, если какие-то заказы с ошибкой?
-        # if condition:
-        #     $
+        if response_data['result'] == 0 and 'error' in response_data:
+            raise ITLogistException(response_data['error'])
 
         return response_data
