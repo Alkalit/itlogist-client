@@ -24,13 +24,12 @@ class ITLogistClient:
 
         args = locals()
         args.pop('self')
+        args.pop('order_id')
 
         data = {}
         for k, v in args.items():
             if v is not None:
                 data[k] = v
-
-        data.pop('order_id')
 
         return self.add_orders({"orders": {order_id: data}})
 
