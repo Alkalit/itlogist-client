@@ -135,31 +135,12 @@ class TestClient(TestCase):
 
         orders = {
             "orders": {
-                "666": {
-                    "ordertype": 2,
-                    "ordernumber": 666,
-                    "date_from": "2019-09-01",
-                    "time1_from": "12:00",
-                    "time2_from": "13:00",
-
-                    "date_to": "2019-09-01",
-                    "time1_to": "17:00",
-                    "time2_to": "18:00",
-                    "pieces": 1,
-
-                    "clientnamefrom": "Вася",
-                    "clientcontactfrom": "Вася",
-                    "clientphonefrom": 78124071343,
-
-                    "clientnameto": "Маша",
-                    "clientcontactto": "Маша",
-                    "clientphoneto": 78124071342,
-                }
+                "1337": order
             }
         }
 
         with self.assertRaises(ITLogistException, msg=fake_response):
-            client.add_orders(orders)
+            client.send(orders)
 
     @responses.activate
     def test_add_orders(self):
