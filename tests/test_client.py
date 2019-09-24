@@ -140,7 +140,7 @@ class TestClient(TestCase):
         }
 
         with self.assertRaises(ITLogistException, msg=fake_response):
-            client.send(orders)
+            client.send(url, orders)
 
     @responses.activate
     def test_send_if_an_error(self):
@@ -160,7 +160,7 @@ class TestClient(TestCase):
         client = Client(API_KEY, DOMAIN)
 
         with self.assertRaises(ITLogistException, msg='Array orders is null'):
-            client.send(wrong_orders)
+            client.send(url, wrong_orders)
 
     @responses.activate
     def test_send(self):
@@ -180,7 +180,7 @@ class TestClient(TestCase):
 
         client = Client(DOMAIN, API_KEY)
 
-        response = client.send(orders)
+        response = client.send(url, orders)
 
         self.assertEqual(response, fake_response)
 
@@ -206,7 +206,7 @@ class TestClient(TestCase):
 
         client = Client(API_KEY, DOMAIN)
 
-        response = client.send(wrong_orders)
+        response = client.send(url, wrong_orders)
 
         # Don't rise anithing if some orders passed and some not
         self.assertEqual(response, fake_response)

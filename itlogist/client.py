@@ -2,7 +2,6 @@ import requests
 from json import JSONDecodeError, dumps
 
 
-
 class ITLogistException(Exception):
     pass
 
@@ -17,21 +16,10 @@ class ITLogistClient:
     def add_orders(self, data):
 
         url = 'https://{}.itlogist.ru/api/v1/{}/orders_add/'.format(self.domain, self.api_key)
-        response = requests.post(url, data=data)
 
-        try:
-            response_data = response.json()
-        except JSONDecodeError:
-            raise ITLogistException(response.text)
+        return self.send(url, data)
 
-        # if condition:
-        #     $
-
-        return response_data
-
-    def send(self, data):
-
-        url = 'https://{}.itlogist.ru/api/v1/{}/orders_add/'.format(self.domain, self.api_key)
+    def send(self, url, data):
 
         data = {"orders": dumps(data["orders"])}
         response = requests.post(url, data=data)
