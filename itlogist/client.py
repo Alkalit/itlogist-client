@@ -1,5 +1,6 @@
 import requests
-from json import JSONDecodeError
+from json import JSONDecodeError, dumps
+
 
 
 class ITLogistException(Exception):
@@ -20,6 +21,29 @@ class ITLogistClient:
 
         try:
             response_data = response.json()
-            return response_data
         except JSONDecodeError:
             raise ITLogistException(response.text)
+
+        # if condition:
+        #     $
+
+        return response_data
+
+    def send(self, data):
+
+        url = 'https://{}.itlogist.ru/api/v1/{}/orders_add/'.format(self.domain, self.api_key)
+
+        data = {"orders": dumps(data["orders"])}
+        response = requests.post(url, data=data)
+
+        try:
+            response_data = response.json()
+        except JSONDecodeError:
+            raise ITLogistException(response.text)
+
+
+        # TODO - как отработает запрос, если какие-то заказы с ошибкой?
+        # if condition:
+        #     $
+
+        return response_data
