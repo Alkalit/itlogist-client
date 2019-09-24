@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.mock import MagicMock
 import responses
 from itlogist.client import ITLogistClient as Client, ITLogistException
 
@@ -210,3 +211,65 @@ class TestClient(TestCase):
 
         # Don't rise anithing if some orders passed and some not
         self.assertEqual(response, fake_response)
+
+    def test_add_an_order(self):
+
+        client = Client(API_KEY, DOMAIN)
+        client.add_orders = MagicMock()
+
+        client.add_order(
+            order_id="100500",
+            ordertype=2,
+
+            date_from="2019-09-25",
+            time1_from="12:00",
+            time2_from="13:00",
+
+            date_to="2019-09-25",
+
+            clientnamefrom="Вася",
+            clientcontactfrom="Вася",
+            clientphonefrom=89771016770,
+
+            clientnameto="Лена",
+            clientcontactto="Лена",
+            clientphoneto=89771016767,
+            cityfrom= 78,
+            cityto= 78,
+
+            streetfrom="Мира",
+            streetto="Мира",
+            buildingfrom="5",
+            buildingto="55"
+        )
+
+        expected = {
+            "orders": {
+                "100500": dict(
+                    ordertype=2,
+
+                    date_from="2019-09-25",
+                    time1_from="12:00",
+                    time2_from="13:00",
+
+                    date_to="2019-09-25",
+
+                    clientnamefrom="Вася",
+                    clientcontactfrom="Вася",
+                    clientphonefrom=89771016770,
+
+                    clientnameto="Лена",
+                    clientcontactto="Лена",
+                    clientphoneto=89771016767,
+                    cityfrom= 78,
+                    cityto= 78,
+
+                    streetfrom="Мира",
+                    streetto="Мира",
+                    buildingfrom="5",
+                    buildingto="55"
+                )
+            }
+        }
+
+        client.add_orders.assert_called_with(expected)
