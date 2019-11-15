@@ -11,6 +11,10 @@ class ITLogistClient:
     EXPRESS_DELIVERY = 1
     DELIVERY = 2
     BY_SELF = 7
+
+    РКОдост = 127
+    РКОэксп = 128
+
     SANKT_PETERBURG = SPB = 78
 
     def __init__(self, api_key: str, domain: str):
