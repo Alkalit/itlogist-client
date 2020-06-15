@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="itlogist-client",
-    version="0.0.1",
+    version="0.0.2",
     author="alkalit",
     author_email="lyoffa412@gmail.com",
     description="Простой клиент для API itlogist",
