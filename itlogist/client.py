@@ -54,7 +54,7 @@ class ITLogistClient:
 
         url = 'https://{}.itlogist.ru/api/v1/{}/orders_status/'.format(self.domain, self.api_key)
 
-        return self.send(url, method='GET', params={'orders': orders})
+        return self.send(url, method='GET', params={'orders': ','.join(orders)})
 
     def send(self, url, data=None, method='POST', params=None):
 

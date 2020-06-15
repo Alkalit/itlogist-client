@@ -96,6 +96,26 @@ ORDER1_DATA = \
          "status":1
       }
 
+ORDER2_DATA = \
+    {
+        "order_status":"700",
+        "order_status_name":"Выполнен",
+        "ordernumber":"FT.22788",
+        "weight":"2",
+        "pieces":"1",
+        "date_from":"2018-01-05",
+        "time1_from":"09:00:00",
+        "time2_from":"20:00:00",
+        "date_to":"2018-01-05",
+        "time1_to":"17:00:00",
+        "time2_to":"20:00:00",
+        "appraised_value":"0.00",
+        "COD_amount":"1850.00",
+        "order_summ_from_contact":"1850.00",
+        "order_summ_return":"0.00",
+        "status":1
+    }
+
 
 class TestClient(TestCase):
 
@@ -320,4 +340,22 @@ class TestClient(TestCase):
         client = Client(API_KEY, DOMAIN)
 
         client.orders_status([NUMBER1])
+        self.assertEqual(len(responses.calls), 1)
+
+    @responses.activate
+    def test_orders_status_if_list_of_number(self):
+
+        url =  f'https://{DOMAIN}.itlogist.ru/api/v1/{API_KEY}/orders_status/?orders={NUMBER1},{NUMBER2}' 
+        self.ORDERS_STATUS_DATA['orders'][NUMBER1] = ORDER1_DATA
+        self.ORDERS_STATUS_DATA['orders'][NUMBER2] = ORDER2_DATA
+
+        responses.add(
+            responses.GET, 
+            url,
+            json=self.ORDERS_STATUS_DATA,
+            match_querystring=True)
+        
+        client = Client(API_KEY, DOMAIN)
+
+        client.orders_status([NUMBER1, NUMBER2])
         self.assertEqual(len(responses.calls), 1)
