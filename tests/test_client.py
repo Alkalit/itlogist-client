@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 import responses
 from itlogist.client import ITLogistClient as Client, ITLogistException
 
@@ -12,8 +12,8 @@ order = {
     'appraised_value': 2000,
     'buildingfrom': '12К1',
     'buildingto': '120К2',
-    'cityfrom': client.SPB,
-    'cityto': client.SPB,
+    'cityfrom': Client.SPB,
+    'cityto': Client.SPB,
     'clientcontactfrom': 'Иван Егоров',
     'clientcontactto': 'Ефимова Ольга',
     'clientnamefrom': 'ООО Пирамида',
@@ -45,8 +45,8 @@ invalid_order = {
     'appraised_value': 2000,
     'buildingfrom': '12К1',
     'buildingto': '120К2',
-    'cityfrom': client.SPB,
-    'cityto': client.SPB,
+    'cityfrom': Client.SPB,
+    'cityto': Client.SPB,
     'clientcontactfrom': 'Иван Егоров',
     'clientcontactto': 'Ефимова Ольга',
     'clientnamefrom': 'ООО Пирамида',
@@ -273,3 +273,43 @@ class TestClient(TestCase):
         }
 
         client.add_orders.assert_called_with(expected)
+
+    @responses.activate
+    def test_orders_status(self):
+
+        number = 'FT.22780'
+        url =  f'https://{DOMAIN}.itlogist.ru/api/v1/{API_KEY}/orders_status/?orders={number}' 
+        responses.add(
+            responses.GET, 
+            url,
+            json= \
+                    {
+                       "result":1,
+                       "orders":{
+                          f"{number}":{
+                             "order_status":"700",
+                             "order_status_name":"Выполнен",
+                             "ordernumber":f"{number}",
+                             "weight":"0.9",
+                             "pieces":"1",
+                             "date_from":"2018-01-05",
+                             "time1_from":"09:00:00",
+                             "time2_from":"20:00:00",
+                             "date_to":"2018-01-05",
+                             "time1_to":"09:00:00",
+                             "time2_to":"15:00:00",
+                             "appraised_value":"0.00",
+                             "COD_amount":"4925.00",
+                             "order_summ_from_contact":"4925.00",
+                             "order_summ_return":"0.00",
+                             "status":1
+                          },
+                       },
+                       "message":""
+                    },
+            match_querystring=True)
+        
+        client = Client(API_KEY, DOMAIN)
+
+        client.orders_status([number])
+        self.assertEqual(len(responses.calls), 1)

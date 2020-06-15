@@ -1,4 +1,5 @@
 import requests
+from typing import Iterable
 from json import JSONDecodeError, dumps
 
 
@@ -45,13 +46,19 @@ class ITLogistClient:
     def add_orders(self, data):
 
         url = 'https://{}.itlogist.ru/api/v1/{}/orders_add/'.format(self.domain, self.api_key)
-
-        return self.send(url, data)
-
-    def send(self, url, data):
-
         data = {"orders": dumps(data["orders"])}
-        response = requests.post(url, data=data)
+
+        return self.send(url, data=data, method='POST')
+
+    def orders_status(self, orders:Iterable):
+
+        url = 'https://{}.itlogist.ru/api/v1/{}/orders_status/'.format(self.domain, self.api_key)
+
+        return self.send(url, method='GET', params={'orders': orders})
+
+    def send(self, url, data=None, method='POST', params=None):
+
+        response = requests.request(method, url, data=data, params=params)
 
         try:
             response_data = response.json()
